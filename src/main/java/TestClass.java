@@ -3,6 +3,7 @@ import java.io.IOException;
 import org.openqa.selenium.Keys;
 
 public class TestClass extends BaseClass {
+	static boolean flag; 
 public static void loadTestpage() throws IOException {
 	BrowserLaunch();
 	loadURL("https://www.shopdisney.com/");
@@ -17,17 +18,24 @@ public static void signIn() throws IOException, InterruptedException {
 	Clickon(getWebelement("//button[@type='submit']"));
 	Thread.sleep(20000);
 	CaptureScreen("SiginSuccess");
+	flag = false;
 }
-public static void searchItems() throws IOException {
-	driver.switchTo().parentFrame();
+public static void searchItems(String item) throws IOException {
+	if(flag == false) {
+		driver.switchTo().parentFrame();
+		flag = true;
+	}
 	Clickon(getWebelement("//button[@class='siteSearch__button']"));
 	driver.switchTo().activeElement();
-	passValue(getWebelement("//input[@class='form-control siteSearch__field']"), getData(1, 0));
+	passValue(getWebelement("//input[@class='form-control siteSearch__field']"), item);
 	passKeys(getWebelement("//input[@class='form-control siteSearch__field']"), Keys.ENTER);
+	
 }
 public static void main(String[] args) throws IOException, InterruptedException {
 	loadTestpage();
 	signIn();
-	searchItems();
+	searchItems(getData(1,0));
+	searchItems(getData(2,0));
+	searchItems(getData(3,0));
 }
 }
