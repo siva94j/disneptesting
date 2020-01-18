@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,6 +13,7 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -19,6 +22,8 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
 
 public class BaseClass {
 	static WebDriver driver;
@@ -83,12 +88,33 @@ public static String getData(int row, int cell) throws IOException
 	w.close();
 	return value;
 }
+public static void writetoExcel(List<String> vals) throws IOException {
+	File loc = new File("excelfiles/output.xlsx");
+	FileOutputStream stream = new FileOutputStream(loc);
+	Workbook w = new XSSFWorkbook();
+	Sheet s = w.createSheet("Output");
+	for(int i = 0; i<vals.size(); i++) {
+	Row r = s.createRow(i);
+	Cell c = r.createCell(0);
+	c.setCellValue(vals.get(i));
+	}
+	w.write(stream);
+	w.close();
+}
 public static void CaptureScreen(String filename) throws IOException {
 	TakesScreenshot tk = (TakesScreenshot) driver;
 	File src = tk.getScreenshotAs(OutputType.FILE);
 	File dest = new File("screenshots/"+filename+".png");
 	FileUtils.copyFile(src, dest);
 }
+
+public static void hover(WebElement ele) {
+	Actions a = new Actions(driver);
+	a.moveToElement(ele).perform();
+}
+//public static tableCellValue(WebElement ele,){
+//
+//}
 //public static void main(String[] args) throws IOException {
 //	BrowserLaunch();
 //	loadURL("https://www.google.com/");
